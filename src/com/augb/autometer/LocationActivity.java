@@ -2,7 +2,6 @@ package com.augb.autometer;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 
 public class LocationActivity extends Activity implements GpsNotificationListener{
