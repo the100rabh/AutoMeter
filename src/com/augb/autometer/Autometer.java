@@ -47,7 +47,9 @@ public class Autometer extends Activity implements GpsNotificationListener{
                 ToggleButton VacantButton = (ToggleButton) findViewById(R.id.VacantHiredButton);
                 VacantButton.setChecked(false);
                 //TODO Stop capturing data.
-        
+        		GpsLocationManager locManager = GpsLocationManager.GetGPSLocationManger();
+        		locManager.stop();
+                
         	}
         });
         init();
