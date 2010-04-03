@@ -26,91 +26,92 @@ public class Autometer extends Activity implements GpsNotificationListener {
 	private TextView waitingTimeView, DistanceView, fareView;
 
 	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		Typeface myTypeface = Typeface.createFromAsset(this.getAssets(),
-				"DS-DIGIB.TTF");
-		waitingTimeView = (TextView) findViewById(R.id.WaitingTime);
-		waitingTimeView.setTypeface(myTypeface);
-		DistanceView = (TextView) findViewById(R.id.Distance);
-		DistanceView.setTypeface(myTypeface);
-		fareView = (TextView) findViewById(R.id.Fare);
-		fareView.setTypeface(myTypeface);
-		ToggleButton VacantButton = (ToggleButton) findViewById(R.id.VacantHiredButton);
-		VacantButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {// do the toggle thing
-				if (v instanceof ToggleButton) {
-					ToggleButton tb = (ToggleButton) v;
-					if (tb.isChecked()) {
-						// its in hiring mode, change to vacant
-						handler.post(new Runnable() {
-							@Override
-							public void run() {
-								stopMeter();
-								init();
-							}
-						});
-					} else {
-						GpsLocationManager locManager = GpsLocationManager
-								.getGPSLocationManger();
-						locManager.start(Autometer.this, Autometer.this);
-						Log.d("test", "start");
-					}
-				}
-			}
-		});
-		Button stopButton = (Button) findViewById(R.id.StopButton);
-		stopButton.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				handler.post(new Runnable() {
-					@Override
-					public void run() {
-						stopMeter();
-					}
-				});
-			}
-		});
-		init();
-	}
-
-	private void stopMeter() {
-		ToggleButton VacantButton = (ToggleButton) findViewById(R.id.VacantHiredButton);
-		VacantButton.setChecked(false);
-		// TODO Stop capturing data.
-		GpsLocationManager locManager = GpsLocationManager.getGPSLocationManger();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {    	
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        Typeface myTypeface = Typeface.createFromAsset(this.getAssets(),"DS-DIGIB.TTF");
+        waitingTimeView = (TextView) findViewById(R.id.WaitingTime);
+        waitingTimeView.setTypeface(myTypeface);
+        DistanceView = (TextView) findViewById(R.id.Distance);
+        DistanceView.setTypeface(myTypeface);
+        fareView = (TextView) findViewById(R.id.Fare);
+        fareView.setTypeface(myTypeface);
+        ToggleButton VacantButton = (ToggleButton) findViewById(R.id.VacantHiredButton);
+        VacantButton.setOnClickListener( new View.OnClickListener(){
+        	
+        	public void onClick(View v)
+        	{//do the toggle thing
+        		if (v instanceof ToggleButton) {
+        			ToggleButton tb = (ToggleButton) v;
+        			if (tb.isChecked()) {
+        				GpsLocationManager locManager = GpsLocationManager.getGPSLocationManger();
+		        		locManager.start( Autometer.this, Autometer.this);
+		        		Log.d("test", "start");
+		        		init(true);
+	        		} else {
+	        			//its in hiring mode, change to vacant
+	        			handler.post(new Runnable() {
+	        	    		@Override
+	        	    		public void run() {
+	        	    			stopMeter();
+	        	    			init(true);
+	        	    		}
+	        	    	});
+	        		}
+        		}
+        	}
+        }
+        );
+        Button stopButton = (Button) findViewById(R.id.StopButton);
+        stopButton.setOnClickListener(new View.OnClickListener (){
+        	public void onClick(View v)
+        	{
+        		handler.post(new Runnable() {
+    	    		@Override
+    	    		public void run() {
+    	    			stopMeter();        		
+    	    		}
+    	    	});
+        	}
+        });
+        init(false);
+    }
+    private void stopMeter() {
+    	ToggleButton VacantButton = (ToggleButton) findViewById(R.id.VacantHiredButton);
+        VacantButton.setChecked(false);
+        //TODO Stop capturing data.
+        GpsLocationManager locManager = GpsLocationManager.getGPSLocationManger();
 		locManager.stop();
 		Log.d("test", "stop");
-	}
-
-	public void init() {
-		distanceValue = fareValue = 0.0;
-		waitingtimeValue = 0;
-		waitingTimeView.setText("--.--");
-		DistanceView.setText("---.-");
-		fareView.setText("---.--");
-
-	}
-	
-	@Override
-	public void onUpdate(final GpsLocation loc) {
-		Log.d("test", "got update: " + loc.toString());
-		handler.post(new Runnable() {
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				distanceValue = loc.getTotalDistance() / 1000;
-				waitingtimeValue = loc.getTotalWaitingDT();// in millisecs
-				waitingTimeView.setText(String.format("%d:%d", waitingtimeValue
-						/ (1000 * 60), waitingtimeValue / (1000)));
-				DistanceView.setText(String.format("%.2f", distanceValue));
-				fareValue = Util.getFareFromDistance(distanceValue,
-						Autometer.this);
-				fareView.setText(String.format("%.2f", fareValue));
-
+    }
+    public void init(boolean toZero)
+    {
+    	distanceValue =  fareValue = 0.0;
+    	waitingtimeValue = 0;
+    	if (toZero) {
+    		waitingTimeView.setText("00.00");
+	    	DistanceView.setText("00.0");
+	    	fareView.setText(String.format("%.2f", Util.getBaseFare(this)));
+    	} else {
+	    	waitingTimeView.setText("--.--");
+	    	DistanceView.setText("---.-");
+	    	fareView.setText("---.--");
+    	}
+    }
+    @Override
+    public void onUpdate(final GpsLocation loc) {
+    	Log.d("test", "got update: " + loc.toString());
+    	handler.post(new Runnable() {
+    		@Override
+    		public void run() {
+    			// TODO Auto-generated method stub
+    	    	distanceValue = loc.getTotalDistance()/1000;
+    	    	waitingtimeValue = loc.getTotalWaitingDT();//in millisecs
+    	    	waitingTimeView.setText(String.format("%d:%d",waitingtimeValue/(1000*60), waitingtimeValue/(1000)));
+    	    	DistanceView.setText(String.format("%.2f", distanceValue));
+    	    	fareValue = Util.getFareFromDistance(distanceValue, Autometer.this);
+    	    	fareView.setText(String.format("%.2f", fareValue));    	    		
 			}
 		});
 
