@@ -81,7 +81,7 @@ public class GpsLocationManager implements LocationListener{
 	
 	@Override
 	public void onLocationChanged(Location newLocation) {
-		if (newLocation != null && newLocation.hasAccuracy()) {
+		if (newLocation != null /*&& newLocation.hasAccuracy()*/) {
 			calu.locationUpdated(newLocation);
 		}
 	}
