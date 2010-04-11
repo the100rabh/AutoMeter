@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="wrap_content"
+  android:layout_height="wrap_content" android:orientation="vertical">
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/total_distance" android:id="@+id/TotalDistanceTextString"></TextView><TextView android:text="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="15px" android:id="@+id/TotalDistanceValue"></TextView></LinearLayout>
+
+<LinearLayout android:id="@+id/LinearLayout02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/total_fare" android:id="@+id/TotalFareTextString"></TextView><TextView android:text="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="15px" android:id="@+id/TotalFareValue"></TextView></LinearLayout>
+
+</LinearLayout>

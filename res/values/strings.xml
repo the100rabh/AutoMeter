@@ -14,4 +14,12 @@
     <string name="settings_label">Settings</string>
     <string name="about_label">About</string>
     <string name="exit_label">Exit</string>            
+
+<string name="total_distance">Total Distance Traveled</string>
+<string name="total_fare">Total Fare</string>
+<string name="total_fare_paid">Total Fare Paid</string>
+<string name="trip_complete">Trip Report</string>
+<string name="ok">ok</string>
+<string name="cancel">Cancel</string>
+
 </resources>

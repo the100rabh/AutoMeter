@@ -1,11 +1,15 @@
 package com.augb.autometer;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,7 +24,8 @@ import com.augb.autometer.util.Util;
 public class Autometer extends Activity implements GpsNotificationListener {
 	double distanceValue, fareValue;
 	long waitingtimeValue;
-
+	private static final int FINAL_VALUE_DLG = 1;
+	
 	Handler handler = new Handler();
 
 	private TextView waitingTimeView, DistanceView, fareView;
@@ -84,6 +89,7 @@ public class Autometer extends Activity implements GpsNotificationListener {
         GpsLocationManager locManager = GpsLocationManager.getGPSLocationManger();
 		locManager.stop();
 		Log.d("test", "stop");
+		showDialog(FINAL_VALUE_DLG);
     }
     public void init(boolean toZero)
     {
@@ -139,5 +145,38 @@ public class Autometer extends Activity implements GpsNotificationListener {
 
 		}
 		return false;
+	}
+	
+	protected Dialog onCreateDialog(int id)
+	{
+		AlertDialog.Builder builder;
+		Dialog dialog;
+		switch(id)
+		{
+			case FINAL_VALUE_DLG:
+			{
+
+	            LayoutInflater factory = LayoutInflater.from(this);
+	            final View textEntryView = factory.inflate(R.layout.trip_complete_dialog, null);
+	            builder = new AlertDialog.Builder(Autometer.this);
+                builder.setTitle(R.string.trip_complete)
+                .setView(textEntryView)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+    
+                        /* User clicked OK so do some stuff */
+                    }
+                });
+                dialog = builder.create();
+                TextView finalDistance = (TextView) textEntryView.findViewById(R.id.TotalDistanceValue);
+                finalDistance.setText(String.format("%.2f Km",distanceValue ));
+                
+                TextView finalFare = (TextView) textEntryView.findViewById(R.id.TotalFareValue);
+                finalFare.setText(String.format("%.2f Km",fareValue ));
+                return dialog;
+			}
+		}
+		return null;
+		
 	}
 }
